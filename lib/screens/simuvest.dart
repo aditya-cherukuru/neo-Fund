@@ -1,62 +1,72 @@
-// lib/screens/simuvest.dart
+// lib/screens/invest.dart
 import 'package:flutter/material.dart';
-import '../services/simulation_service.dart';
-import '../widgets/projection_chart.dart';
+import '../services/market_service.dart';
 
-class SimuVestScreen extends StatefulWidget {
-  const SimuVestScreen({Key? key}) : super(key: key);
+class InvestScreen extends StatefulWidget {
+  const InvestScreen({Key? key}) : super(key: key);
 
   @override
-  State<SimuVestScreen> createState() => _SimuVestScreenState();
+  State<InvestScreen> createState() => _InvestScreenState();
 }
 
-class _SimuVestScreenState extends State<SimuVestScreen> {
-  String selectedTheme = SimulationService.themes.first;
-  final double amount = 10.0;
-  late Map<int, Map<String, double>> projection;
+class _InvestScreenState extends State<InvestScreen> {
+  late Future<List<Map<String, dynamic>>> _marketFuture;
 
   @override
   void initState() {
     super.initState();
-    projection = SimulationService.simulate(amount);
+    _marketFuture = MarketService.fetchTopCryptos();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("SimuVest")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              value: selectedTheme,
-              items: SimulationService.themes
-                  .map((theme) => DropdownMenuItem(
-                        value: theme,
-                        child: Text(theme),
-                      ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  selectedTheme = val!;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ProjectionChart(
-                data: projection,
-                selectedTheme: selectedTheme,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              "Projected value of ₹10 in $selectedTheme",
-              style: Theme.of(context).textTheme.titleMedium,
-            )
-          ],
-        ),
+      appBar: AppBar(title: const Text("Live Investment Engine")),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _marketFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data!;
+            final best = data.reduce((a, b) =>
+                a["change"] > b["change"] ? a : b);
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    "📈 Best Pick Today: ${best["name"]} (${best["symbol"]})\nChange: ${best["change"]}%",
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (_, i) => Card(
+                      child: ListTile(
+                        title: Text(data[i]["name"]),
+                        subtitle: Text("₹${data[i]["price"]}"),
+                        trailing: Text(
+                          "${data[i]["change"]}%",
+                          style: TextStyle(
+                            color: data[i]["change"] > 0
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text("API Error: ${snapshot.error}"));
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
