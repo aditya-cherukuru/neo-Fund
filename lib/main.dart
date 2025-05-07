@@ -26,7 +26,7 @@ class SimuVestApp extends StatelessWidget {
       routes: {
         '/': (context) => HomeDashboard(),
         '/invest': (context) => InvestScreen(),
-        '/simuvest': (context) => SimuVestScreen(),
+        '/simuvest': (context) => SimuvestScreen(),
         '/squad': (context) => SquadScreen(),
         '/profile': (context) => ProfileScreen(),
       },
