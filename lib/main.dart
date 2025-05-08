@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/home_dashboard.dart';
 import 'screens/invest.dart';
 import 'screens/simuvest.dart';
 import 'screens/squad.dart';
 import 'screens/profile.dart';
 
-void main() {
+// Make main async so we can await the dotenv loading
+Future<void> main() async {
+  // Initialize Flutter bindings
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Load environment variables from .env file
+  await dotenv.load(fileName: ".env");
+  
+  // Run the app after environment variables are loaded
   runApp(SimuVestApp());
 }
 
