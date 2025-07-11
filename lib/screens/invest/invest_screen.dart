@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../utils/theme.dart';
 import '../../widgets/bottom_nav_bar.dart';
-
+import '../../widgets/split_vest_chart.dart';
 
 class InvestScreen extends StatefulWidget {
   const InvestScreen({super.key});
@@ -15,6 +15,12 @@ class _InvestScreenState extends State<InvestScreen> {
   double _investmentAmount = 100;
   bool _isRoundUp = true;
   
+  final Map<String, double> _splitVestAllocation = {
+    'Crypto': 25,
+    'Stocks': 45,
+    'Funds': 30,
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,8 +134,99 @@ class _InvestScreenState extends State<InvestScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+
+            // SplitVest Section
+            Text(
+              'SplitVest',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 16),
             
+            SplitVestChart(allocation: _splitVestAllocation),
+            const SizedBox(height: 24),
+
+            // Asset Breakdown
+            ..._splitVestAllocation.entries.map((entry) => Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppTheme.cardBackground,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: _getAssetColor(entry.key),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      entry.key,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
+                  Text(
+                    '${entry.value.toStringAsFixed(0)}%',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            )),
+            const SizedBox(height: 32),
+
+            // Confirm Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => _confirmInvestment(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.accentGreen,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text(
+                  'Confirm SimuVest',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 1),
     );
   }
+
+  Color _getAssetColor(String asset) {
+    switch (asset) {
+      case 'Crypto':
+        return AppTheme.primaryPurple;
+      case 'Stocks':
+        return AppTheme.accentGreen;
+      case 'Funds':
+        return AppTheme.accentBlue;
+      default:
+        return Colors.grey;
+    }
   }
+
+  void _confirmInvestment() {
+    // Navigate to SimuVest screen with investment details
+    context.go('/simuvest');
+  }
+}
