@@ -30,34 +30,34 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # UI & Navigation
+ 
   cupertino_icons: ^1.0.2
   go_router: ^12.1.3
   flutter_svg: ^2.0.9
   
-  # State Management
+  
   provider: ^6.1.1
   shared_preferences: ^2.2.2
   
-  # Firebase & Backend
+
   firebase_core: ^2.24.2
   firebase_auth: ^4.15.3
   cloud_firestore: ^4.13.6
   firebase_analytics: ^10.7.4
   
-  # HTTP & API
+  
   http: ^1.1.2
   dio: ^5.4.0
   
-  # Charts & Visualization
+ 
   fl_chart: ^0.66.0
   pie_chart: ^5.4.0
   
-  # Utils
+  
   intl: ^0.19.0
   uuid: ^4.2.1
   
-  # AI Integration (placeholder for Gemini API)
+  
   google_generative_ai: ^0.2.2
 
 
@@ -79,9 +79,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
-  assets:
-    - assets/images/
-    - assets/icons/
+  #assets:
+  #  - assets/images/
+  #  - assets/icons/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
