@@ -92,16 +92,16 @@ class _FutureFundScreenState extends State<FutureFundScreen> {
                 ...provider.activeMilestones.map((milestone) => 
                   MilestoneCard(
                     milestone: milestone,
-                    onClaim: () => _claimMilestone(milestone), 
+                    onClaim: () => _claimMilestone(milestone),
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                // Create New Milestone Button 
+                // Create New Milestone
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    onPressed: () => _showCreateMilestoneDialog(), 
+                    onPressed: () => _showCreateMilestoneDialog(),
                     icon: const Icon(Icons.add),
                     label: const Text('Create New Milestone'),
                     style: ElevatedButton.styleFrom(
@@ -115,7 +115,7 @@ class _FutureFundScreenState extends State<FutureFundScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                //Current Sponsors 
+                // Current Sponsors
                 Text(
                   'Your Sponsors',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -161,6 +161,156 @@ class _FutureFundScreenState extends State<FutureFundScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showCreateMilestoneDialog() {
+    final titleController = TextEditingController();
+    final amountController = TextEditingController();
+    final descriptionController = TextEditingController();
+    String selectedType = 'Savings Goal';
+    
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          backgroundColor: AppTheme.cardBackground,
+          title: const Text('Create Milestone'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Milestone Title',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  decoration: const InputDecoration(
+                    labelText: 'Milestone Type',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: [
+                    'Savings Goal',
+                    'Investment Challenge',
+                    'Risk Management',
+                    'Learning Achievement',
+                  ].map((type) => DropdownMenuItem(
+                    value: type,
+                    child: Text(type),
+                  )).toList(),
+                  onChanged: (value) => setState(() => selectedType = value!),
+                ),
+                const SizedBox(height: 16),
+                
+                TextField(
+                  controller: amountController,
+                  decoration: const InputDecoration(
+                    labelText: 'Target Amount (₹)',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (titleController.text.isNotEmpty && 
+                    amountController.text.isNotEmpty) {
+                  _createMilestone(
+                    titleController.text,
+                    selectedType,
+                    double.tryParse(amountController.text) ?? 0,
+                    descriptionController.text,
+                  );
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Create'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _createMilestone(String title, String type, double amount, String description) {
+    Provider.of<FutureFundProvider>(context, listen: false)
+        .createMilestone(title, type, amount, description);
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Milestone "$title" created successfully!'),
+        backgroundColor: AppTheme.accentGreen,
+      ),
+    );
+  }
+
+  void _claimMilestone(Map<String, dynamic> milestone) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.cardBackground,
+        title: const Text('Claim Milestone'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.celebration,
+              size: 64,
+              color: AppTheme.accentGreen,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Congratulations!',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'You\'ve completed: ${milestone['title']}',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Reward: ₹${milestone['reward']}',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: AppTheme.accentGreen,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Provider.of<FutureFundProvider>(context, listen: false)
+                  .claimMilestone(milestone['id']);
+            },
+            child: const Text('Claim Reward'),
+          ),
+        ],
       ),
     );
   }
