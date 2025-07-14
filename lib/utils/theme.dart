@@ -10,7 +10,7 @@ class AppTheme {
   static const Color textPrimary = Color(0xFFFFFFFF);
   static const Color textSecondary = Color(0xFFB0B0B0);
 
-static ThemeData get darkTheme {
+  static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
       primarySwatch: Colors.purple,
@@ -36,4 +36,37 @@ static ThemeData get darkTheme {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
-      )
+      ),
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(
+          color: textPrimary,
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+        ),
+        headlineMedium: TextStyle(
+          color: textPrimary,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+        bodyLarge: TextStyle(
+          color: textPrimary,
+          fontSize: 16,
+        ),
+        bodyMedium: TextStyle(
+          color: textSecondary,
+          fontSize: 14,
+        ),
+      ),
+      colorScheme: const ColorScheme.dark(
+        primary: primaryPurple,
+        secondary: accentGreen,
+        surface: cardBackground,
+        background: darkBackground,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: textPrimary,
+        onBackground: textPrimary,
+      ),
+    );
+  }
+}
