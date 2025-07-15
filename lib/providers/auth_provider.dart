@@ -81,3 +81,21 @@ class AuthProvider extends ChangeNotifier {
           riskTolerance: 'Medium',
           createdAt: DateTime.now(),
         );
+
+          await _firestore.collection('users').doc(credential.user!.uid).set(userModel.toMap());
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Sign up error: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
+}
