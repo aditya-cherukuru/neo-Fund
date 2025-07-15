@@ -15,3 +15,30 @@ class AuthProvider extends ChangeNotifier {
   UserModel? get userModel => _userModel;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _user != null;
+
+  AuthProvider() {
+    _auth.authStateChanges().listen(_onAuthStateChanged);
+  }
+  
+  void _onAuthStateChanged(User? user) {
+    _user = user;
+    if (user != null) {
+      _loadUserModel();
+    } else {
+      _userModel = null;
+    }
+    notifyListeners();
+  }
+  
+  Future<void> _loadUserModel() async {
+    if (_user == null) return;
+    
+    try {
+      final doc = await _firestore.collection('users').doc(_user!.uid).get();
+      if (doc.exists) {
+        _userModel = UserModel.fromMap(doc.data()!);
+      }
+    } catch (e) {
+      print('Error loading user model: $e');
+    }
+  }
