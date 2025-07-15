@@ -42,3 +42,42 @@ class AuthProvider extends ChangeNotifier {
       print('Error loading user model: $e');
     }
   }
+
+  Future<bool> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return true;
+    } catch (e) {
+      print('Sign in error: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  
+  Future<bool> createUserWithEmailAndPassword(String email, String password, String name) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      
+      if (credential.user != null) {
+        final userModel = UserModel(
+          uid: credential.user!.uid,
+          email: email,
+          name: name,
+          totalBalance: 0,
+          xpLevel: 1,
+          streak: 0,
+          interests: [],
+          riskTolerance: 'Medium',
+          createdAt: DateTime.now(),
+        );
