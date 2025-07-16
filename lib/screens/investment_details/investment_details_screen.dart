@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../../utils/theme.dart';
 
-class InvestmentDetailsScreen extends StatelessWidget {
+class InvestmentDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> investment;
 
   const InvestmentDetailsScreen({
@@ -10,7 +11,14 @@ class InvestmentDetailsScreen extends StatelessWidget {
   });
 
   @override
+  State<InvestmentDetailsScreen> createState() => _InvestmentDetailsScreenState();
+}
+
+class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
+  @override
   Widget build(BuildContext context) {
+    final investment = widget.investment;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(investment['userName']),
@@ -20,6 +28,7 @@ class InvestmentDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Investor Profile
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -54,31 +63,157 @@ class InvestmentDetailsScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildStatChip('${investment['followers']} Followers'),
+                      const SizedBox(width: 12),
+                      _buildStatChip('${investment['accuracy']}% Accuracy'),
+                    ],
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
+
+            // Performance Metrics
             Text(
               'Performance Metrics',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 20),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20,
+              ),
             ),
             const SizedBox(height: 16),
+
             Row(
               children: [
-                Expanded(child: _buildMetricCard('Total Return', '+${investment['return']}%', Icons.trending_up, AppTheme.accentGreen)),
+                Expanded(
+                  child: _buildMetricCard(
+                    'Total Return',
+                    '+${investment['return']}%',
+                    Icons.trending_up,
+                    AppTheme.accentGreen,
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: _buildMetricCard('Risk Level', investment['riskLevel'], Icons.warning, AppTheme.accentRed)),
+                Expanded(
+                  child: _buildMetricCard(
+                    'Risk Level',
+                    investment['riskLevel'],
+                    Icons.warning,
+                    _getRiskColor(investment['riskLevel']),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
+
             Row(
               children: [
-                Expanded(child: _buildMetricCard('Duration', investment['duration'], Icons.schedule, AppTheme.accentBlue)),
+                Expanded(
+                  child: _buildMetricCard(
+                    'Duration',
+                    investment['duration'],
+                    Icons.schedule,
+                    AppTheme.accentBlue,
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(child: _buildMetricCard('Total Invested', '₹${investment['totalInvested']}', Icons.account_balance_wallet, AppTheme.primaryPurple)),
+                Expanded(
+                  child: _buildMetricCard(
+                    'Total Invested',
+                    '₹${investment['totalInvested']}',
+                    Icons.account_balance_wallet,
+                    AppTheme.primaryPurple,
+                  ),
+                ),
               ],
             ),
+            const SizedBox(height: 24),
+
+            // Performance Chart
+            Text(
+              'Performance History',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            Container(
+              height: 200,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppTheme.cardBackground,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: LineChart(
+                LineChartData(
+                  gridData: const FlGridData(show: false),
+                  titlesData: const FlTitlesData(show: false),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: _generatePerformanceData(),
+                      isCurved: true,
+                      color: AppTheme.accentGreen,
+                      barWidth: 3,
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: AppTheme.accentGreen.withOpacity(0.1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Investment Strategy
+            Text(
+              'Investment Strategy',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppTheme.cardBackground,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                investment['strategy'],
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  height: 1.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatChip(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -97,12 +232,46 @@ class InvestmentDetailsScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(color: color, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 4),
-          Text(title, textAlign: TextAlign.center),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
+  }
+
+  Color _getRiskColor(String riskLevel) {
+    switch (riskLevel.toLowerCase()) {
+      case 'low':
+        return AppTheme.accentGreen;
+      case 'medium':
+        return Colors.amber;
+      case 'high':
+        return AppTheme.accentRed;
+      default:
+        return AppTheme.textSecondary;
+    }
+  }
+
+  List<FlSpot> _generatePerformanceData() {
+    return [
+      const FlSpot(0, 100),
+      const FlSpot(1, 105),
+      const FlSpot(2, 110),
+      const FlSpot(3, 115),
+      const FlSpot(4, 125),
+      const FlSpot(5, 130),
+      const FlSpot(6, 145),
+    ];
   }
 }
