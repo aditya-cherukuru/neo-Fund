@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../utils/theme.dart';
+import '../../services/ai_service.dart';
 
 class InvestmentDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> investment;
@@ -15,10 +16,35 @@ class InvestmentDetailsScreen extends StatefulWidget {
 }
 
 class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
+  final AIService _aiService = AIService();
+  String _aiAnalysis = '';
+  bool _isLoadingAnalysis = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAIAnalysis();
+  }
+
+  Future<void> _loadAIAnalysis() async {
+    try {
+      final analysis = await _aiService.explainAssetType(widget.investment['strategy']);
+      setState(() {
+        _aiAnalysis = analysis;
+        _isLoadingAnalysis = false;
+      });
+    } catch (e) {
+      setState(() {
+        _aiAnalysis = 'Analysis temporarily unavailable. Please try again later.';
+        _isLoadingAnalysis = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final investment = widget.investment;
-
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(investment['userName']),
@@ -28,7 +54,8 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Investor Profile
+
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -77,7 +104,6 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Performance Metrics
             Text(
               'Performance Metrics',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -132,7 +158,6 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Performance Chart
             Text(
               'Performance History',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -171,7 +196,6 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Investment Strategy
             Text(
               'Investment Strategy',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -195,6 +219,64 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
               ),
             ),
             const SizedBox(height: 24),
+
+            Text(
+              'AI Analysis',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppTheme.cardBackground,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppTheme.accentGreen.withOpacity(0.3),
+                ),
+              ),
+              child: _isLoadingAnalysis
+                  ? const Row(
+                      children: [
+                        CircularProgressIndicator(strokeWidth: 2),
+                        SizedBox(width: 12),
+                        Text('AI is analyzing this strategy...'),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.psychology,
+                              color: AppTheme.accentGreen,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Powered by Gemini AI',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppTheme.accentGreen,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          _aiAnalysis,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+            const SizedBox(height: 32),
           ],
         ),
       ),
