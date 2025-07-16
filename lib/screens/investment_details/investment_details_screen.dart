@@ -48,14 +48,19 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(investment['userName']),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () => _shareInvestment(),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-
+            // Investor Profile
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -104,6 +109,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
+            // Performance Metrics
             Text(
               'Performance Metrics',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -111,7 +117,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
+            
             Row(
               children: [
                 Expanded(
@@ -134,7 +140,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
               ],
             ),
             const SizedBox(height: 12),
-
+            
             Row(
               children: [
                 Expanded(
@@ -158,6 +164,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
+            // Performance Chart
             Text(
               'Performance History',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -165,7 +172,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
+            
             Container(
               height: 200,
               padding: const EdgeInsets.all(16),
@@ -196,6 +203,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
+            // Investment Strategy
             Text(
               'Investment Strategy',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -203,7 +211,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
+            
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -220,6 +228,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
             ),
             const SizedBox(height: 24),
 
+            // AI Analysis
             Text(
               'AI Analysis',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -227,7 +236,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
+            
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -277,6 +286,35 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
                     ),
             ),
             const SizedBox(height: 32),
+
+            // Action Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _followInvestor(),
+                    icon: const Icon(Icons.person_add),
+                    label: const Text('Follow'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      side: const BorderSide(color: AppTheme.accentBlue),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _copyStrategy(),
+                    icon: const Icon(Icons.copy),
+                    label: const Text('Copy Strategy'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.accentGreen,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -346,6 +384,7 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
   }
 
   List<FlSpot> _generatePerformanceData() {
+    // Generate mock performance data
     return [
       const FlSpot(0, 100),
       const FlSpot(1, 105),
@@ -355,5 +394,31 @@ class _InvestmentDetailsScreenState extends State<InvestmentDetailsScreen> {
       const FlSpot(5, 130),
       const FlSpot(6, 145),
     ];
+  }
+
+  void _shareInvestment() {
+    // Implement sharing functionality
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Sharing functionality coming soon!')),
+    );
+  }
+
+  void _followInvestor() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Now following ${widget.investment['userName']}!'),
+        backgroundColor: AppTheme.accentGreen,
+      ),
+    );
+  }
+
+  void _copyStrategy() {
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Copied ${widget.investment['userName']}\'s strategy!'),
+        backgroundColor: AppTheme.accentGreen,
+      ),
+    );
   }
 }
