@@ -16,14 +16,30 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifications'),
+        actions: [
+          if (_notificationService.notifications.isNotEmpty)
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _notificationService.clearAll();
+                });
+              },
+              child: const Text('Clear All'),
+            ),
+        ],
       ),
       body: _notificationService.notifications.isEmpty
           ? _buildEmptyState()
-          : const Center(
-              child: Text(
-                'Notifications loaded',
-                style: TextStyle(fontSize: 18),
-              ),
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _notificationService.notifications.length,
+              itemBuilder: (context, index) {
+                final notification = _notificationService.notifications[index];
+                return ListTile(
+                  title: Text(notification['title']),
+                  subtitle: Text(notification['message']),
+                );
+              },
             ),
     );
   }
