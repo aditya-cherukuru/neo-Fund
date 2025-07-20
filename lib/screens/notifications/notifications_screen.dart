@@ -18,18 +18,38 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         title: const Text('Notifications'),
       ),
       body: _notificationService.notifications.isEmpty
-          ? const Center(
-              child: Text(
-                'No notifications',
-                style: TextStyle(fontSize: 18),
-              ),
-            )
+          ? _buildEmptyState()
           : const Center(
               child: Text(
                 'Notifications loaded',
                 style: TextStyle(fontSize: 18),
               ),
             ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.notifications_none,
+            size: 80,
+            color: Colors.grey.withOpacity(0.5),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'No notifications yet',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'We\'ll notify you about important updates',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      ),
     );
   }
 }
