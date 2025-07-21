@@ -101,3 +101,68 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 24),
+
+                // Investment Preferences
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppTheme.cardBackground,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Investment Preferences',
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildPreferenceItem(
+                        'Risk Tolerance',
+                        user.riskTolerance,
+                        Icons.trending_up,
+                      ),
+                      const SizedBox(height: 12),
+                      _buildPreferenceItem(
+                        'Interests',
+                        user.interests.isEmpty ? 'Not set' : user.interests.join(', '),
+                        Icons.favorite,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Badges Section
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppTheme.cardBackground,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Badges',
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildBadge('🌟', 'First Investment'),
+                          _buildBadge('🚀', 'Growth Tracker'),
+                          _buildBadge('🎯', 'Goal Achiever'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
