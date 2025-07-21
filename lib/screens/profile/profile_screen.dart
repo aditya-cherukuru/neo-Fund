@@ -75,3 +75,29 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
+
+                 // Stats Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        'Streak',
+                        '${user.streak} days',
+                        Icons.local_fire_department,
+                        AppTheme.accentRed,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        'Balance',
+                        '₹${user.totalBalance.toStringAsFixed(0)}',
+                        Icons.account_balance_wallet,
+                        AppTheme.accentGreen,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
