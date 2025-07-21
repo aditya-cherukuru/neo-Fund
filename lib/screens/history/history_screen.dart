@@ -126,3 +126,116 @@ class _HistoryScreenState extends State<HistoryScreen> {
       bottomNavigationBar: const BottomNavBar(currentIndex: 2),
     );
   }
+
+  List<FlSpot> _getSoloChartData() {
+    return [
+      const FlSpot(0, 100),
+      const FlSpot(1, 120),
+      const FlSpot(2, 110),
+      const FlSpot(3, 140),
+      const FlSpot(4, 160),
+      const FlSpot(5, 150),
+      const FlSpot(6, 180),
+    ];
+  }
+
+  List<FlSpot> _getSquadChartData() {
+    return [
+      const FlSpot(0, 100),
+      const FlSpot(1, 115),
+      const FlSpot(2, 125),
+      const FlSpot(3, 135),
+      const FlSpot(4, 145),
+      const FlSpot(5, 155),
+      const FlSpot(6, 170),
+    ];
+  }
+
+  List<Widget> _buildInvestmentHistory() {
+    final investments = [
+      {
+        'type': 'Crypto',
+        'amount': 100,
+        'result': 120,
+        'date': '2 days ago',
+        'icon': Icons.currency_bitcoin,
+      },
+      {
+        'type': 'Stocks',
+        'amount': 50,
+        'result': 45,
+        'date': '1 week ago',
+        'icon': Icons.trending_up,
+      },
+      {
+        'type': 'Funds',
+        'amount': 75,
+        'result': 82,
+        'date': '2 weeks ago',
+        'icon': Icons.account_balance,
+      },
+    ];
+
+    return investments.map((investment) {
+      final isProfit = (investment['result'] as int) > (investment['amount'] as int);
+      final percentage = (((investment['result'] as int) - (investment['amount'] as int)) / 
+          (investment['amount'] as int) * 100);
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppTheme.cardBackground,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: (isProfit ? AppTheme.accentGreen : AppTheme.accentRed).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                investment['icon'] as IconData,
+                color: isProfit ? AppTheme.accentGreen : AppTheme.accentRed,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    investment['type'] as String,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  Text(
+                    '₹${investment['amount']} → ₹${investment['result']}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Text(
+                    investment['date'] as String,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppTheme.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              '${percentage.toStringAsFixed(1)}%',
+              style: TextStyle(
+                color: isProfit ? AppTheme.accentGreen : AppTheme.accentRed,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      );
+    }).toList();
+  }
+}
