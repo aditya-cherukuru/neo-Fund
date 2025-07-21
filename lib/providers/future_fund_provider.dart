@@ -21,7 +21,7 @@ class FutureFundProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      // Mock data for demonstration
+      
       _activeMilestones = [
         {
           'id': '1',
@@ -71,6 +71,30 @@ class FutureFundProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> createMilestone(String title, String type, double amount, String description) async {
+    try {
+      final milestone = {
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'title': title,
+        'type': type,
+        'targetAmount': amount,
+        'currentAmount': 0,
+        'reward': amount * 0.1, // 10% reward
+        'deadline': DateTime.now().add(const Duration(days: 30)),
+        'sponsor': 'Pending',
+        'description': description,
+      };
+
+      _activeMilestones.add(milestone);
+      notifyListeners();
+
+      
+      await _firestore.collection('milestones').add(milestone);
+    } catch (e) {
+      print('Error creating milestone: $e');
     }
   }
 }
