@@ -35,9 +35,39 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               itemCount: _notificationService.notifications.length,
               itemBuilder: (context, index) {
                 final notification = _notificationService.notifications[index];
-                return ListTile(
-                  title: Text(notification['title']),
-                  subtitle: Text(notification['message']),
+                final isRead = notification['isRead'] as bool? ?? false;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isRead ? Colors.grey[200] : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      notification['title'],
+                      style: TextStyle(
+                        fontWeight:
+                            isRead ? FontWeight.normal : FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(notification['message']),
+                    onTap: () {
+                      if (!isRead) {
+                        setState(() {
+                          _notificationService.markAsRead(notification['id']);
+                        });
+                      }
+                    },
+                  ),
                 );
               },
             ),
