@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/notification_service.dart';
+import '../../utils/theme.dart';
+import '../../utils/helpers.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -35,40 +37,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               itemCount: _notificationService.notifications.length,
               itemBuilder: (context, index) {
                 final notification = _notificationService.notifications[index];
-                final isRead = notification['isRead'] as bool? ?? false;
-
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: isRead ? Colors.grey[200] : Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      notification['title'],
-                      style: TextStyle(
-                        fontWeight:
-                            isRead ? FontWeight.normal : FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(notification['message']),
-                    onTap: () {
-                      if (!isRead) {
-                        setState(() {
-                          _notificationService.markAsRead(notification['id']);
-                        });
-                      }
-                    },
-                  ),
-                );
+                return _buildNotificationCard(notification);
               },
             ),
     );
@@ -82,7 +51,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           Icon(
             Icons.notifications_none,
             size: 80,
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.white.withOpacity(0.5),
           ),
           const SizedBox(height: 24),
           Text(
@@ -97,5 +66,88 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildNotificationCard(Map<String, dynamic> notification) {
+    final isRead = notification['isRead'] as bool;
+    final timestamp = DateTime.parse(notification['timestamp']);
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: isRead ? AppTheme.cardBackground : AppTheme.cardBackground.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isRead ? Colors.transparent : AppTheme.accentGreen.withOpacity(0.3),
+        ),
+      ),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: _getNotificationColor(notification['type']).withOpacity(0.2),
+          child: Icon(
+            _getNotificationIcon(notification['type']),
+            color: _getNotificationColor(notification['type']),
+          ),
+        ),
+        title: Text(
+          notification['title'],
+          style: TextStyle(
+            fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+          ),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 4),
+            Text(notification['message']),
+            const SizedBox(height: 4),
+            Text(
+              AppHelpers.getTimeAgo(timestamp),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppTheme.textSecondary,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+        onTap: () {
+          if (!isRead) {
+            setState(() {
+              _notificationService.markAsRead(notification['id']);
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Color _getNotificationColor(String type) {
+    switch (type) {
+      case 'NotificationType.investment':
+        return AppTheme.accentGreen;
+      case 'NotificationType.achievement':
+        return Colors.amber;
+      case 'NotificationType.market':
+        return AppTheme.accentBlue;
+      case 'NotificationType.social':
+        return AppTheme.primaryPurple;
+      default:
+        return AppTheme.textSecondary;
+    }
+  }
+
+  IconData _getNotificationIcon(String type) {
+    switch (type) {
+      case 'NotificationType.investment':
+        return Icons.trending_up;
+      case 'NotificationType.achievement':
+        return Icons.emoji_events;
+      case 'NotificationType.market':
+        return Icons.show_chart;
+      case 'NotificationType.social':
+        return Icons.group;
+      default:
+        return Icons.notifications;
+    }
   }
 }
