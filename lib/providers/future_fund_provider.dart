@@ -3,25 +3,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FutureFundProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  
   List<Map<String, dynamic>> _activeMilestones = [];
   List<Map<String, dynamic>> _sponsors = [];
   double _totalSponsored = 0;
   int _activeSponsorships = 0;
   bool _isLoading = false;
-
+  
   List<Map<String, dynamic>> get activeMilestones => _activeMilestones;
   List<Map<String, dynamic>> get sponsors => _sponsors;
   double get totalSponsored => _totalSponsored;
   int get activeSponsorships => _activeSponsorships;
   bool get isLoading => _isLoading;
-
+  
   Future<void> loadMilestones() async {
     try {
       _isLoading = true;
       notifyListeners();
-
       
+      // Mock data for demonstration
       _activeMilestones = [
         {
           'id': '1',
@@ -46,7 +46,7 @@ class FutureFundProvider extends ChangeNotifier {
           'description': 'Learn patience and risk management',
         },
       ];
-
+      
       _sponsors = [
         {
           'id': '1',
@@ -63,9 +63,10 @@ class FutureFundProvider extends ChangeNotifier {
           'activeMilestones': 1,
         },
       ];
-
+      
       _totalSponsored = 800;
       _activeSponsorships = 2;
+      
     } catch (e) {
       print('Error loading milestones: $e');
     } finally {
@@ -73,7 +74,7 @@ class FutureFundProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
+  
   Future<void> createMilestone(String title, String type, double amount, String description) async {
     try {
       final milestone = {
@@ -87,14 +88,24 @@ class FutureFundProvider extends ChangeNotifier {
         'sponsor': 'Pending',
         'description': description,
       };
-
+      
       _activeMilestones.add(milestone);
       notifyListeners();
-
       
       await _firestore.collection('milestones').add(milestone);
+      
     } catch (e) {
       print('Error creating milestone: $e');
+    }
+  }
+  
+  Future<void> claimMilestone(String milestoneId) async {
+    try {
+      _activeMilestones.removeWhere((milestone) => milestone['id'] == milestoneId);
+      notifyListeners();
+ 
+    } catch (e) {
+      print('Error claiming milestone: $e');
     }
   }
 }
