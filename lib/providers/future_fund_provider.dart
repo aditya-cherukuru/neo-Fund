@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FutureFundProvider extends ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   List<Map<String, dynamic>> _activeMilestones = [];
   List<Map<String, dynamic>> _sponsors = [];
   double _totalSponsored = 0;
@@ -12,4 +15,62 @@ class FutureFundProvider extends ChangeNotifier {
   double get totalSponsored => _totalSponsored;
   int get activeSponsorships => _activeSponsorships;
   bool get isLoading => _isLoading;
+
+  Future<void> loadMilestones() async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      // Mock data for demonstration
+      _activeMilestones = [
+        {
+          'id': '1',
+          'title': 'Save ₹1000 in 30 days',
+          'type': 'Savings Goal',
+          'targetAmount': 1000,
+          'currentAmount': 750,
+          'reward': 100,
+          'deadline': DateTime.now().add(const Duration(days: 10)),
+          'sponsor': 'Mom',
+          'description': 'Build your emergency fund',
+        },
+        {
+          'id': '2',
+          'title': 'Avoid high-risk investments for 2 weeks',
+          'type': 'Risk Management',
+          'targetAmount': 0,
+          'currentAmount': 0,
+          'reward': 50,
+          'deadline': DateTime.now().add(const Duration(days: 5)),
+          'sponsor': 'Dad',
+          'description': 'Learn patience and risk management',
+        },
+      ];
+
+      _sponsors = [
+        {
+          'id': '1',
+          'name': 'Mom',
+          'avatar': '👩',
+          'totalSponsored': 500,
+          'activeMilestones': 2,
+        },
+        {
+          'id': '2',
+          'name': 'Dad',
+          'avatar': '👨',
+          'totalSponsored': 300,
+          'activeMilestones': 1,
+        },
+      ];
+
+      _totalSponsored = 800;
+      _activeSponsorships = 2;
+    } catch (e) {
+      print('Error loading milestones: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
