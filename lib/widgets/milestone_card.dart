@@ -13,6 +13,10 @@ class MilestoneCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final progress = milestone['targetAmount'] > 0
+        ? (milestone['currentAmount'] / milestone['targetAmount']).clamp(0.0, 1.0)
+        : 0.0;
+
     final deadline = milestone['deadline'] as DateTime;
     final daysLeft = deadline.difference(DateTime.now()).inDays;
 
@@ -64,6 +68,32 @@ class MilestoneCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
+          if (milestone['targetAmount'] > 0) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '₹${milestone['currentAmount'].toStringAsFixed(0)} / ₹${milestone['targetAmount'].toStringAsFixed(0)}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  '${(progress * 100).toStringAsFixed(0)}%',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppTheme.textSecondary.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                AppTheme.primaryPurple,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
           Row(
             children: [
               Icon(
