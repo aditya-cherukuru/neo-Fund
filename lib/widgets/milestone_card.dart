@@ -13,10 +13,10 @@ class MilestoneCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progress = milestone['targetAmount'] > 0
+    final progress = milestone['targetAmount'] > 0 
         ? (milestone['currentAmount'] / milestone['targetAmount']).clamp(0.0, 1.0)
         : 0.0;
-
+    final isCompleted = progress >= 1.0;
     final deadline = milestone['deadline'] as DateTime;
     final daysLeft = deadline.difference(DateTime.now()).inDays;
 
@@ -27,7 +27,9 @@ class MilestoneCard extends StatelessWidget {
         color: AppTheme.cardBackground,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.primaryPurple.withOpacity(0.3),
+          color: isCompleted 
+              ? AppTheme.accentGreen.withOpacity(0.5)
+              : AppTheme.primaryPurple.withOpacity(0.3),
         ),
       ),
       child: Column(
@@ -51,9 +53,16 @@ class MilestoneCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              if (isCompleted)
+                Icon(
+                  Icons.check_circle,
+                  color: AppTheme.accentGreen,
+                  size: 20,
+                ),
             ],
           ),
           const SizedBox(height: 12),
+          
           Text(
             milestone['title'],
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -61,6 +70,7 @@ class MilestoneCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
+          
           Text(
             milestone['description'],
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -68,6 +78,7 @@ class MilestoneCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
+          
           if (milestone['targetAmount'] > 0) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,15 +96,17 @@ class MilestoneCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
+            
             LinearProgressIndicator(
               value: progress,
               backgroundColor: AppTheme.textSecondary.withOpacity(0.2),
               valueColor: AlwaysStoppedAnimation<Color>(
-                AppTheme.primaryPurple,
+                isCompleted ? AppTheme.accentGreen : AppTheme.primaryPurple,
               ),
             ),
             const SizedBox(height: 12),
           ],
+          
           Row(
             children: [
               Icon(
@@ -118,12 +131,27 @@ class MilestoneCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Text(
-            'Reward: ₹${milestone['reward']}',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.accentGreen,
-              fontWeight: FontWeight.bold,
-            ),
+          
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Reward: ₹${milestone['reward']}',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppTheme.accentGreen,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (isCompleted)
+                ElevatedButton(
+                  onPressed: onClaim,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.accentGreen,
+                  ),
+                  child: const Text('Claim'),
+                ),
+            ],
           ),
         ],
       ),
