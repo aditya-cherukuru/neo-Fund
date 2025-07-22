@@ -16,6 +16,28 @@ class ScenarioCard extends StatelessWidget {
     final scenarioType = scenario['scenario'] as String;
     final value = scenario['value'] as double;
     final description = scenario['description'] as String;
+    
+    Color getScenarioColor() {
+      switch (scenarioType.toLowerCase()) {
+        case 'bullish':
+          return AppTheme.accentGreen;
+        case 'bearish':
+          return AppTheme.accentRed;
+        default:
+          return AppTheme.accentBlue;
+      }
+    }
+
+    String getScenarioEmoji() {
+      switch (scenarioType.toLowerCase()) {
+        case 'bullish':
+          return '🐂';
+        case 'bearish':
+          return '🐻';
+        default:
+          return '🐢';
+      }
+    }
 
     return GestureDetector(
       onTap: onSelect,
@@ -26,7 +48,7 @@ class ScenarioCard extends StatelessWidget {
           color: AppTheme.cardBackground,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Colors.grey.withOpacity(0.3),
+            color: getScenarioColor().withOpacity(0.3),
             width: 1,
           ),
         ),
@@ -36,13 +58,13 @@ class ScenarioCard extends StatelessWidget {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
+                color: getScenarioColor().withOpacity(0.2),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  '🔷',
-                  style: TextStyle(fontSize: 24),
+                  getScenarioEmoji(),
+                  style: const TextStyle(fontSize: 24),
                 ),
               ),
             ),
@@ -54,8 +76,9 @@ class ScenarioCard extends StatelessWidget {
                   Text(
                     scenarioType,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontSize: 18,
-                        ),
+                      fontSize: 18,
+                      color: getScenarioColor(),
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -65,8 +88,9 @@ class ScenarioCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
+              color: getScenarioColor(),
               size: 16,
             ),
           ],
