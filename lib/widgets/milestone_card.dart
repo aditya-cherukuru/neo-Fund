@@ -63,6 +63,7 @@ class MilestoneCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
+
           Text(
             milestone['title'],
             style: Theme.of(
@@ -70,6 +71,7 @@ class MilestoneCard extends StatelessWidget {
             ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
+
           Text(
             milestone['description'],
             style: Theme.of(
@@ -77,6 +79,7 @@ class MilestoneCard extends StatelessWidget {
             ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 12),
+
           if (milestone['targetAmount'] > 0) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,6 +97,7 @@ class MilestoneCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
+
             LinearProgressIndicator(
               value: progress,
               backgroundColor: AppTheme.textSecondary.withOpacity(0.2),
@@ -103,9 +107,10 @@ class MilestoneCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
+
           Row(
             children: [
-              const Icon(Icons.person, size: 16, color: AppTheme.textSecondary),
+              Icon(Icons.person, size: 16, color: AppTheme.textSecondary),
               const SizedBox(width: 4),
               Text(
                 'Sponsored by ${milestone['sponsor']}',
@@ -123,6 +128,29 @@ class MilestoneCard extends StatelessWidget {
                           : AppTheme.accentRed,
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Reward: ₹${milestone['reward']}',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppTheme.accentGreen,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (isCompleted)
+                ElevatedButton(
+                  onPressed: onClaim,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.accentGreen,
+                  ),
+                  child: const Text('Claim'),
+                ),
             ],
           ),
         ],
