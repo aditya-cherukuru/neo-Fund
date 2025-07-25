@@ -23,7 +23,24 @@ class SplitVestChart extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: PieChart(
-        PieChartData(sections: [], sectionsSpace: 3, centerSpaceRadius: 40),
+        PieChartData(
+          sections:
+              allocation.entries.map((entry) {
+                return PieChartSectionData(
+                  color: colorMap[entry.key] ?? Colors.grey,
+                  value: entry.value,
+                  title: '${entry.value.toStringAsFixed(0)}%',
+                  radius: 60,
+                  titleStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                );
+              }).toList(),
+          sectionsSpace: 3,
+          centerSpaceRadius: 40,
+        ),
       ),
     );
   }
