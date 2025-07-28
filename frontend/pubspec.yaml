@@ -1,4 +1,4 @@
-name: neo_fund
+name: mintmate
 description: An AI-powered personal finance companion for students.
 publish_to: 'none'
 
@@ -48,5 +48,7 @@ flutter:
     - assets/onboarding/onboarding1.png
     - assets/onboarding/onboarding2.png
     - assets/onboarding/onboarding3.png
+    - assets/images/
     - assets/icons/app_logo.png
     - assets/animations/
+    - .env

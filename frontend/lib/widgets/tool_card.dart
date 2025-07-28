@@ -1,64 +1,128 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ToolCard extends StatelessWidget {
   final String title;
-  final String subtitle;
   final IconData icon;
-  final VoidCallback? onTap;
+  final Widget destinationScreen;
+  final Color? color;
+  final String? description;
 
   const ToolCard({
     super.key,
     required this.title,
-    required this.subtitle,
     required this.icon,
-    this.onTap,
+    required this.destinationScreen,
+    this.color,
+    this.description,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+    final toolColor = color ?? Theme.of(context).primaryColor;
+    
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => destinationScreen),
+      ),
       child: Container(
-        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? AppTheme.darkModeSurface : AppTheme.lightModeSurface,
-          borderRadius: BorderRadius.circular(12),
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 16,
+              offset: Offset(0, 4),
+            ),
+          ],
           border: Border.all(
-            color: isDark ? AppTheme.darkModePurple.withOpacity(0.2) : AppTheme.lightModePurple.withOpacity(0.2),
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
             width: 1,
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              icon,
-              color: isDark ? AppTheme.darkModePurple : AppTheme.lightModePurple,
-              size: 24,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => destinationScreen),
             ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(
-                color: isDark ? AppTheme.darkModeText : AppTheme.lightModeText,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Tool Icon
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          toolColor.withOpacity(0.1),
+                          toolColor.withOpacity(0.05),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: toolColor.withOpacity(0.2),
+                        width: 1,
+                      ),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: toolColor,
+                      size: 24,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 12),
+                  
+                  // Tool Name
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  
+                  // Optional Description
+                  if (description != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      description!,
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  
+                  const SizedBox(height: 8),
+                  
+                  // Arrow indicator
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 12,
+                    color: toolColor.withOpacity(0.6),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(
-                color: isDark ? AppTheme.darkModeTextSecondary : AppTheme.lightModeTextSecondary,
-                fontSize: 12,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
