@@ -1,7 +1,0 @@
-{
-  "name": "neo-fund-frontend",
-  "version": "1.0.0",
-  "devDependencies": {
-    "netlify-plugin-flutter": "^1.0.0"
-  }
-} 
