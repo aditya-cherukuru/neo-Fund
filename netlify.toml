@@ -1,7 +1,0 @@
-[build]
-  command = "chmod +x build.sh && ./build.sh"
-  publish = "build/web"
-  base = "frontend"
-
-[build.environment]
-  FLUTTER_VERSION = "stable"

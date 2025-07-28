@@ -36,11 +36,11 @@ NeoFund is designed to empower students to take control of their finances. With 
 
 ## Project Structure
 
-MintMate-backup/
-├── MintMate-backup/
+neo-Fund/
+├── 
 │   ├── backend/         # Node.js/Express backend
 │   └── frontend/        # Flutter frontend
-└── neo-Fund/            # (Another project, not part of MintMate)
+└── README.md          # (Another project, not part of MintMate)
 
 
 ### Backend Structure
