@@ -48,7 +48,5 @@ flutter:
     - assets/onboarding/onboarding1.png
     - assets/onboarding/onboarding2.png
     - assets/onboarding/onboarding3.png
-    - assets/images/
     - assets/icons/app_logo.png
     - assets/animations/
-    - .env

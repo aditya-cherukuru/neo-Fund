@@ -1,23 +1,17 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Flutter web build..."
+echo "🚀 Starting Flutter web build using Netlify environment..."
 
-# Install Flutter
-echo "📥 Installing Flutter..."
-wget -qO- https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.24.5-stable.tar.xz | tar -xJf -
-export PATH="$PATH:$(pwd)/flutter/bin"
-
-# Verify Flutter
-echo "🔍 Verifying Flutter..."
+# Check Flutter version provided by Netlify
 flutter --version
 
 # Get dependencies
-echo "📦 Getting dependencies..."
+echo "📦 Running flutter pub get..."
 flutter pub get
 
-# Build web app
-echo "🏗️ Building web app..."
+# Build web
+echo "🏗️ Building Flutter web app..."
 flutter build web --release
 
-echo "✅ Build completed!"
+echo "✅ Flutter web build completed successfully!"
