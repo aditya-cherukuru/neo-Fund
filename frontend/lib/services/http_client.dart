@@ -12,8 +12,8 @@ import 'auth_service.dart';
 import 'dart:io' if (dart.library.html) 'dart:html' as io;
 
 class HttpClient {
-  // Updated base URL to be more reliable for web development
-  static const String baseUrl = "http://127.0.0.1:3000/api";
+  // Updated base URL to use the deployed backend on Render
+  static const String baseUrl = "https://neo-fund.onrender.com/api";
   
   // Platform-specific storage
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
