@@ -11,7 +11,7 @@ echo "📋 Environment Info:"
 echo "  - PWD: $(pwd)"
 echo "  - PATH: $PATH"
 echo "  - FLUTTER_VERSION: $FLUTTER_VERSION"
-echo "  - NODE_VERSION: $NODE_VERSION"
+echo "  - Building Flutter web app (no Node.js required)"
 
 # Check if Flutter is already installed
 if command -v flutter &> /dev/null; then
