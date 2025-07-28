@@ -1,7 +1,7 @@
 {
-  "name": "mintmate-backend",
+  "name": "NeoFund-backend",
   "version": "1.0.0",
-  "description": "Backend for MintMate financial management app",
+  "description": "Backend for NeoFund financial management app",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
