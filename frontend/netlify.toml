@@ -1,7 +1,8 @@
 [build]
-  command = "curl -sSL https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.24.5-stable.tar.xz | tar xJ && export PATH=\"$PATH:$(pwd)/flutter/bin\" && flutter pub get && flutter build web --release"
+  command = "./build.sh"
   publish = "build/web"
   base = "frontend"
 
 [build.environment]
   FLUTTER_VERSION = "stable"
+  NODE_VERSION = "18"
